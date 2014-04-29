@@ -1,6 +1,6 @@
 PImage startScreen; 
 PFont title;
-int screenSizeX, screenSizeY, stage; 
+int stage; 
 
 PImage energy1, energy2; 
 PImage bg, moon, grass, rock, spaceship;
