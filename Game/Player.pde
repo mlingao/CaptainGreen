@@ -3,6 +3,7 @@ class Player{
   
   Boolean isOnGround; 
   Boolean facingRight; 
+  Boolean isHurt;
   int animDelay;
   int animFrame; 
   int energyCollected; 
@@ -18,12 +19,14 @@ class Player{
   Player(){
     isOnGround = false;
     facingRight = true; 
+    isHurt = false;
     position = new PVector();
     velocity = new PVector (); 
     reset(); 
   }
   
   void reset(){
+    isHurt = false;
     energyCollected = 0; 
     animDelay = 0;
     animFrame = 0;
@@ -144,6 +147,10 @@ class Player{
       }
     }
   }
+  //set the status of the player to hurt
+  void hurt(){
+    isHurt = true;
+  }
   
   void move(){
     position.add(velocity);
@@ -156,8 +163,7 @@ class Player{
     int capGreenWidth = CaptainGreen_stand.width;
     int capGreenHeight = CaptainGreen_stand.height;
     
-    
-    println(isOnGround);
+   
     if(velocity.x <- TRIVIAL_SPEED){
       facingRight = false;
     }else if(velocity.x > TRIVIAL_SPEED){
@@ -171,11 +177,17 @@ class Player{
     }
     translate(-capGreenWidth/2,-capGreenHeight);
     
-    if(isOnGround == false){
+    
+    if(isHurt == true){
+      image(CaptainGreen_hurt,0,0); 
+    }
+    else if(isOnGround == false){
        image(CaptainGreen_jump,0,0); 
-    }else if(abs(velocity.x)<TRIVIAL_SPEED){
+    }
+    else if(abs(velocity.x)<TRIVIAL_SPEED){
        image(CaptainGreen_stand,0,0); 
-    }else{
+    }
+    else{
       if(animDelay --<0){
         animDelay = RUN_ANIMATION_DELAY;
         if(animFrame == 0){
@@ -193,8 +205,4 @@ class Player{
     }
     popMatrix();
   }
-   
-    
- 
-  
 }

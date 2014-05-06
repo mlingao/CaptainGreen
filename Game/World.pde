@@ -10,11 +10,12 @@ class World{
  
  static final int animation_Delay = 5 ; 
  
- static final int TILE_EMPTY     = 0;
- static final int TILE_SOLID     = 1;
- static final int TILE_ENERGY    = 2; 
- static final int TILE_START     = 3; 
- static final int TILE_SPACESHIP = 4;
+ static final int TILE_EMPTY         = 0;
+ static final int TILE_SOLID         = 1;
+ static final int TILE_ENERGY        = 2; 
+ static final int TILE_START         = 3; 
+ static final int TILE_SPACESHIP     = 4;
+ static final int TILE_OPPONENTSTART = 5;
 
  static final int GRID_UNIT_SIZE = 126;
  
@@ -25,7 +26,7 @@ class World{
  
  int [][] start_Grid = { {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0},
-                         {0, 3, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 5, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
    
  World(){}
@@ -52,9 +53,6 @@ class World{
     float gridSpotX = thisPosition.x/GRID_UNIT_SIZE;
     float gridSpotY = thisPosition.y/GRID_UNIT_SIZE; 
     
-    println("thisPosition.x  = " + thisPosition.x);
-    println("thisPosition.y  = " + thisPosition.y);
-    println(gridSpotX, gridSpotY);
     if (gridSpotX < 0){
        return TILE_SOLID; 
     }
@@ -102,12 +100,22 @@ class World{
      
     for(int i=0;i<GRID_UNITS_WIDE;i++) {
       for(int ii=0;ii<GRID_UNITS_TALL;ii++) {
+        if(start_Grid[ii][i] == TILE_OPPONENTSTART){
+          worldGrid[ii][i] = TILE_EMPTY;
+         
+          opponent.position.x = i*GRID_UNIT_SIZE+(GRID_UNIT_SIZE/2);
+          opponent.position.y = ii*GRID_UNIT_SIZE+(GRID_UNIT_SIZE/2); 
+          
+        }
+        
         if(start_Grid[ii][i] == TILE_START) { // player start position
           worldGrid[ii][i] = TILE_EMPTY; // put an empty tile in that spot
-  
+        
           // then update the player spot to the center of that tile
           player.position.x = i*GRID_UNIT_SIZE+(GRID_UNIT_SIZE/2);
           player.position.y = ii*GRID_UNIT_SIZE+(GRID_UNIT_SIZE/2);
+          
+          
         } else {
           if(start_Grid[ii][i]==TILE_ENERGY) {
             totalEnergy++;

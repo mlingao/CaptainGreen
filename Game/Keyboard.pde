@@ -7,8 +7,8 @@ class Keyboard{
    } 
    
    void pressKey(int key, int keyCode){
-     if (key == 'r')
-        resetGame(); 
+   if (key == 'r')
+     resetGame(); 
       
  
    
@@ -46,4 +46,5 @@ class Keyboard{
      holdingSpace = false; 
    } 
   }
+ 
 }

@@ -16,7 +16,10 @@ float cameraOffsetX;
 
 World world1 = new World(); 
 World world2;
+
 Player player = new Player();
+Opponent opponent = new Opponent();
+
 Keyboard theKeyboard = new Keyboard(); 
 
 final float GRAVITY_POWER = 0.5;
@@ -67,6 +70,7 @@ void setup(){
 
 void resetGame(){
    player.reset();
+   opponent.reset();
    world1.reload();
 }
 
@@ -106,7 +110,7 @@ void draw(){
     stage = 2;
   } 
  }
- if(stage == 2){
+ else if(stage == 2){
    pushMatrix();
    translate(-cameraOffsetX,0.0);
    updateCameraPosition();
@@ -116,12 +120,49 @@ void draw(){
    player.inputCheck(); 
    player.move();
    player.draw();
+   
+   opponent.move(player.position);
+   opponent.draw();
+   
+   if(opponent.kill(player.position)){ //WIP
+     player.hurt();
+     //disable keys
+     theKeyboard.disableAllButR();
+     deadScreen();
+     //stage = 3;
+   }
+   
+   println("Player Position:" + player.position.x +" , " + player.position.y);
+   println("Opponent Positon:"+ opponent.position.x +" , " + opponent.position.y);
+   
    popMatrix();
    
    textAlign(TOP);
    outlinedText("Energy:" + player.energyCollected + "/" + world1.totalEnergy, 8, height - 10);
- }
+   
+   }//end of stage 2
+ 
+   else if(stage == 3){
+    
+    textAlign(CENTER);
+    textSize(32);
+    text ("TO THE SHIP!!",375,50);
+    text ("GAME OVER!!!! Press any key to restart the game",375,450); 
+    if(key == 'r'){
+      resetGame();
+      stage = 1;
+    } 
+  }//end of stage 3
   
+  else{
+  
+  }
+}
+
+void deadScreen(){
+  loadPixels();
+  tint(100);
+  updatePixels();
 }
 
 void keyPressed(){
