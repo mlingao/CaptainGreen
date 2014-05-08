@@ -128,6 +128,7 @@ class Opponent {
            velocity.x = -RUN_SPEED;
            position.x--;
           }
+   
   }
   boolean kill(PVector v1){ //only determined by the x coordinate
     if ((distanceBetweenX(v1, position)<60 && distanceBetweenX(v1, position)>-60) && (distanceBetweenY(v1, position)<80 && distanceBetweenY(v1, position)>-80)){
@@ -163,7 +164,7 @@ class Opponent {
     }
     
     
-    println(opponentOnGround);
+    //println(opponentOnGround);
     if (velocity.x <- TRIVIAL_SPEED) {
       opponentFacingRight = false;
     }

@@ -12,7 +12,13 @@ PImage CaptainBlue_walk1, CaptainBlue_walk2,
 int height = 500;
 int width = 750; 
 
-float cameraOffsetX; 
+float cameraOffsetX, cameraOffsetY;
+
+int animDelay;
+int animFrame; 
+
+
+
 
 World world1 = new World(); 
 World world2;
@@ -25,14 +31,12 @@ Keyboard theKeyboard = new Keyboard();
 final float GRAVITY_POWER = 0.5;
 
 void setup(){ 
- size(width, height);
+ size(width, height );
  stage = 1;
- //screenSizeX = round(screen.width * 0.90);
-// screenSizeY = round(screen.height * 0.90);
-// size(screenSizeX,screenSizeY);
+
  startScreen = loadImage("bg.jpg");
  image(startScreen,0,0,width,height);
- title = loadFont("Castellar-48.vlw");
+ title = loadFont("ArialMT-48.vlw");
  
  
  bg = loadImage("bg.jpg");
@@ -44,6 +48,7 @@ void setup(){
  energy2 = loadImage("energyball2.png");
  
  cameraOffsetX = 0.0;  
+ cameraOffsetY = 0.0; 
 
  CaptainGreen_jump = loadImage("jump.png");
  CaptainGreen_stand = loadImage("stand.png");
@@ -87,7 +92,9 @@ void outlinedText(String sayThis, float atX, float atY) {
 
 void updateCameraPosition(){
    int rightEdge = World.GRID_UNITS_WIDE * World.GRID_UNIT_SIZE - width;
-  
+   int topEdge = World.GRID_UNITS_TALL * World.GRID_UNIT_SIZE - height; 
+   
+ 
    cameraOffsetX = player.position.x - width / 2; 
    if (cameraOffsetX < 0){
      cameraOffsetX = 0;
@@ -96,27 +103,56 @@ void updateCameraPosition(){
    if (cameraOffsetX > rightEdge){
      cameraOffsetX = rightEdge;  
    }
+   
+   cameraOffsetY = player.position.y - height/2;
+   if(cameraOffsetY < 0){
+      cameraOffsetY = 0; 
+   }
+   
+   if (cameraOffsetY > topEdge){
+      cameraOffsetY = topEdge;  
+   }
+ 
+   
 }
 
 void draw(){
  // background();
  
  if(stage == 1){
+  background(bg); 
   textAlign(CENTER);
   textSize(32);
   text ("TO THE SHIP!!",375,50);
-  text ("Press any key to start game",375,450); 
-  if(keyPressed == true){
-    stage = 2;
+  
+   if(animDelay --<0){
+        animDelay = 12;
+        if(animFrame == 0){
+          animFrame = 1;
+        }else {
+          animFrame = 0;
+        }
+      }
+      println(animFrame);
+      if(animFrame == 0){
+        text ("    ",375,450); 
+      } else {
+        text ("Press any key to start the game",375,450); 
+      }
+  
+    if(keyPressed == true){
+       stage = 2;
   } 
  }
  else if(stage == 2){
    pushMatrix();
-   translate(-cameraOffsetX,0.0);
+   translate(-cameraOffsetX, -cameraOffsetY);
+   //translate(cameraOffsetY,0.0); 
    updateCameraPosition();
    world2 = new World(bg, moon);
    world1.render();
  
+   
    player.inputCheck(); 
    player.move();
    player.draw();
@@ -127,9 +163,9 @@ void draw(){
    if(opponent.kill(player.position)){ //WIP
      player.hurt();
      //disable keys
-     theKeyboard.disableAllButR();
+    // theKeyboard.disableAllButR();
      deadScreen();
-     //stage = 3;
+     stage = 3;
    }
    
    println("Player Position:" + player.position.x +" , " + player.position.y);
@@ -138,19 +174,45 @@ void draw(){
    popMatrix();
    
    textAlign(TOP);
-   outlinedText("Energy:" + player.energyCollected + "/" + world1.totalEnergy, 8, height - 10);
+   image(energy1, 50, 433, 40 , 40 );
+   outlinedText(" "+player.energyCollected, 85, 473);
    
    }//end of stage 2
  
    else if(stage == 3){
+    //int animDelay;
+    //int animFrame; 
     
+     
+     
+    background(#030000);
     textAlign(CENTER);
     textSize(32);
+    
     text ("TO THE SHIP!!",375,50);
-    text ("GAME OVER!!!! Press any key to restart the game",375,450); 
-    if(key == 'r'){
+    
+     if(animDelay --<0){
+        animDelay = 12;
+        if(animFrame == 0){
+          animFrame = 1;
+        }else {
+          animFrame = 0;
+        }
+      }
+      
+      if(animFrame == 0){
+      text ("Press ENTER to restart the game",375,450); 
+      } else {
+      text (" ",375,450); 
+      }
+    
+    
+  
+    
+    if(keyCode == ENTER){
       resetGame();
-      stage = 1;
+      tint(255);
+      stage = 2;
     } 
   }//end of stage 3
   
@@ -158,6 +220,7 @@ void draw(){
   
   }
 }
+
 
 void deadScreen(){
   loadPixels();

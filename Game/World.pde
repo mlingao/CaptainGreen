@@ -8,7 +8,7 @@ class World{
  int animDelay = 0;
  int animFrame = 0;
  
- static final int animation_Delay = 5 ; 
+ static final int animation_Delay = 3 ; 
  
  static final int TILE_EMPTY         = 0;
  static final int TILE_SOLID         = 1;
@@ -16,18 +16,25 @@ class World{
  static final int TILE_START         = 3; 
  static final int TILE_SPACESHIP     = 4;
  static final int TILE_OPPONENTSTART = 5;
+ static final int TILE_ROCK          = 6; 
+ static final int TILE_PLATFORM      = 7; 
+ static final int TILE_DEATH         = 8; 
 
- static final int GRID_UNIT_SIZE = 126;
+ static final int GRID_UNIT_SIZE = 100;//126
  
  static final int GRID_UNITS_WIDE = 40;
- static final int GRID_UNITS_TALL = 4; 
+ static final int GRID_UNITS_TALL = 8; //4
  
  int [][] worldGrid = new int[GRID_UNITS_TALL][GRID_UNITS_WIDE];
  
  int [][] start_Grid = { {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0},
-                         {0, 5, 0, 3, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
+                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 5, 0, 3, 2, 7, 7, 7, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
    
  World(){}
  public World(PImage bg, PImage moon){
@@ -93,6 +100,7 @@ class World{
       return 0;
     }
     return leftOfSquare(thisPosition)+GRID_UNIT_SIZE;
+    
   }
   
  void reload(){
@@ -138,14 +146,15 @@ class World{
     for(int j = 0; j < GRID_UNITS_TALL; j++){
      switch(worldGrid[j][i]){
       case TILE_SOLID:
-         image(grass, i*GRID_UNIT_SIZE, j*GRID_UNIT_SIZE);
+         image(grass, i*GRID_UNIT_SIZE, j*GRID_UNIT_SIZE, 100,100);
          break;
       case TILE_SPACESHIP:
-        image(spaceship,i * grass.width, 30 , 300,300);
+        image(spaceship,i * grass.width, 300 , 300,300);
         break;   
       case TILE_ENERGY:
           if(animDelay--<0){
-            animDelay = animation_Delay;
+            animDelay = 200; 
+            //animDelay = animation_Delay;
             if(animFrame == 0){
               animFrame = 1; 
             } else {
@@ -154,11 +163,20 @@ class World{
           }
           
           if(animFrame == 0){
-            image(energy1, i * GRID_UNIT_SIZE ,(j * GRID_UNIT_SIZE) + 55, 50, 50);
-          } else {   
-            image(energy2, i * GRID_UNIT_SIZE ,(j * GRID_UNIT_SIZE) + 55, 50, 50);
-          }
+            image(energy1, i * GRID_UNIT_SIZE ,(j * GRID_UNIT_SIZE) + 30, 50, 50);
+          } else{
+            //image(energy1, i * GRID_UNIT_SIZE ,(j * GRID_UNIT_SIZE) + 45, 50, 50);
+            image(energy1, i * GRID_UNIT_SIZE ,(j * GRID_UNIT_SIZE) + 50, 50, 50);
+              }
+          
           break; 
+       case TILE_ROCK:
+         image(rock, i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE + 25);
+         break; 
+         
+       case TILE_PLATFORM:
+         image(grass, i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE, 100, 100);
+         break; 
      } 
     }
    }
