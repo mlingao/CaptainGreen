@@ -18,7 +18,7 @@ class World{
  static final int TILE_OPPONENTSTART = 5;
  static final int TILE_ROCK          = 6; 
  static final int TILE_PLATFORM      = 7; 
- static final int TILE_DEATH         = 8; 
+ static final int TILE_LAVA          = 8; 
 
  static final int GRID_UNIT_SIZE = 100;//126
  
@@ -31,10 +31,10 @@ class World{
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 7, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {0, 5, 0, 3, 2, 7, 7, 7, 2, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
+                         {0, 5, 0, 3, 2, 7, 7, 7, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
    
  World(){}
  public World(PImage bg, PImage moon){
@@ -78,6 +78,15 @@ class World{
     
     return worldGrid[int(gridSpotY)][int(gridSpotX)];
  }
+ 
+ float topSquare(PVector thisPosition) {
+    int thisY = int(thisPosition.y);
+    //println(thisY); 
+    
+    
+    thisY /= GRID_UNIT_SIZE;
+    return float(thisY * GRID_UNIT_SIZE);
+  }
  
   float topOfSquare(PVector thisPosition) {
     int thisY = int(thisPosition.y);
@@ -153,7 +162,7 @@ class World{
         break;   
       case TILE_ENERGY:
           if(animDelay--<0){
-            animDelay = 200; 
+            animDelay = 100; 
             //animDelay = animation_Delay;
             if(animFrame == 0){
               animFrame = 1; 
@@ -175,8 +184,11 @@ class World{
          break; 
          
        case TILE_PLATFORM:
-         image(grass, i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE, 100, 100);
+         image(plat, i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE, 100, 100);
          break; 
+       case TILE_LAVA:
+         image(lava, i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE, 100, 100);
+         break;
      } 
     }
    }

@@ -1,5 +1,7 @@
 class Opponent {
   PVector position, velocity;
+  PVector sense; 
+
 
   Boolean opponentOnGround;
   Boolean opponentFacingRight;
@@ -33,8 +35,13 @@ class Opponent {
   }
 
   void checkForFalling() {
-    if ( world1.worldSquareAt(position) == World.TILE_EMPTY) {
+    if ( world1.worldSquareAt(position) == World.TILE_EMPTY || world1.worldSquareAt(position) == World.TILE_LAVA) {
       opponentOnGround = false;
+      if (position.y >= 750){ //opponent fell on the lava
+        //opponent is hurt
+        //eliminate opponent
+        //opponentDead();
+      }
     }
 
     if (opponentOnGround == false) {
@@ -128,7 +135,18 @@ class Opponent {
            velocity.x = -RUN_SPEED;
            position.x--;
           }
-   
+          
+  //************************************************************
+  //I DON'T KNOW WHY THIS DOESN'T WORK!
+  //************************************************************
+    if ( world1.worldSquareAt(sense)==World.TILE_PLATFORM) {
+        println("TESTING");
+        velocity.y = -JUMP_POWER; 
+        opponentOnGround = false; 
+        position.y = world1.topSquare(position); 
+    }
+          
+  //*************************************************************
   }
   boolean kill(PVector v1){ //only determined by the x coordinate
     if ((distanceBetweenX(v1, position)<60 && distanceBetweenX(v1, position)>-60) && (distanceBetweenY(v1, position)<80 && distanceBetweenY(v1, position)>-80)){
@@ -143,13 +161,26 @@ class Opponent {
   float distanceBetweenY(PVector v1, PVector v2){
     return v1.y - v2.y;
   }
+ 
+ 
+ //**************************************************************
+ //sense function. 
+  PVector sense(PVector position){
+    //PVector sense; 
+    
+    sense.x = position.x + 50;
+    sense.y = position.y + 50; 
+    
+    return sense;  
+  }
 
   void move(PVector playerPosition) {
     position.add(velocity);
     checkForWallBumping();  
-    checkForFalling();
+    //checkForFalling();
     
     chase(playerPosition);
+    checkForFalling();
   }
 
   void draw() {

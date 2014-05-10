@@ -3,7 +3,7 @@ PFont title;
 int stage; 
 
 PImage energy1, energy2; 
-PImage bg, moon, grass, rock, spaceship;
+PImage bg, moon, grass, rock, spaceship, lava, plat;
 PImage CaptainGreen_jump, CaptainGreen_stand,CaptainGreen_walk1, CaptainGreen_walk2, CaptainGreen_hurt; 
 PImage CaptainBlue_walk1, CaptainBlue_walk2, 
        CaptainBrown_walk1, CaptainBrown_walk2, 
@@ -16,61 +16,59 @@ float cameraOffsetX, cameraOffsetY;
 
 int animDelay;
 int animFrame; 
-
-
-
+final float GRAVITY_POWER = 0.5;
 
 World world1 = new World(); 
 World world2;
-
 Player player = new Player();
 Opponent opponent = new Opponent();
-
 Keyboard theKeyboard = new Keyboard(); 
 
-final float GRAVITY_POWER = 0.5;
-
 void setup(){ 
- size(width, height );
- stage = 1;
-
- startScreen = loadImage("bg.jpg");
- image(startScreen,0,0,width,height);
- title = loadFont("ArialMT-48.vlw");
- 
- 
- bg = loadImage("bg.jpg");
- moon = loadImage("moon.png");
- grass = loadImage("grass.png");
- rock = loadImage("rock.png");
- spaceship = loadImage("SpaceShip.png");
- energy1 = loadImage("energyball1.png");
- energy2 = loadImage("energyball2.png");
- 
- cameraOffsetX = 0.0;  
- cameraOffsetY = 0.0; 
-
- CaptainGreen_jump = loadImage("jump.png");
- CaptainGreen_stand = loadImage("stand.png");
- CaptainGreen_walk1 = loadImage("walk_1.png");
- CaptainGreen_walk2 = loadImage("walk_2.png");
- CaptainGreen_hurt = loadImage("hurt.png");  
- 
- CaptainBlue_walk1 = loadImage("CapBlue_walk1.png");
- CaptainBlue_walk2 = loadImage("CapBlue_walk2.png");
- 
- CaptainBrown_walk1 = loadImage("CapBrown_walk1.png");
- CaptainBrown_walk2 = loadImage("CapBrown_walk2.png");
- 
- CaptainPink_walk1 = loadImage("CapPink_walk1.png");
- CaptainPink_walk2 = loadImage("CapPink_walk2.png");
- 
- noStroke();
- noSmooth();
- frameRate(30);
- 
- resetGame();
-  
+   size(width, height );
+   stage = 1;
+   startScreen = loadImage("bg.jpg");
+   image(startScreen,0,0,width,height);
+   title = loadFont("ArialMT-48.vlw");
+   
+   //*********************
+   //ELEMENTS OF THE WORLD
+   //*********************
+   bg = loadImage("bg.jpg");
+   moon = loadImage("moon.png");
+   grass = loadImage("grass.png");
+   rock = loadImage("rock.png");
+   lava = loadImage("lava.png");
+   plat = loadImage("plat.png");
+   spaceship = loadImage("SpaceShip.png");
+   energy1 = loadImage("energyball1.png");
+   energy2 = loadImage("energyball2.png");
+   
+   cameraOffsetX = 0.0;  
+   cameraOffsetY = 0.0; 
+   
+   //**********************
+   //ELEMENTS OF THE AGENTS
+   //**********************
+   CaptainGreen_jump = loadImage("jump.png");
+   CaptainGreen_stand = loadImage("stand.png");
+   CaptainGreen_walk1 = loadImage("walk_1.png");
+   CaptainGreen_walk2 = loadImage("walk_2.png");
+   CaptainGreen_hurt = loadImage("hurt.png");  
+   
+   CaptainBlue_walk1 = loadImage("CapBlue_walk1.png");
+   CaptainBlue_walk2 = loadImage("CapBlue_walk2.png");
+   
+   CaptainBrown_walk1 = loadImage("CapBrown_walk1.png");
+   CaptainBrown_walk2 = loadImage("CapBrown_walk2.png");
+   
+   CaptainPink_walk1 = loadImage("CapPink_walk1.png");
+   CaptainPink_walk2 = loadImage("CapPink_walk2.png");
+   
+   noStroke();
+   noSmooth();
+   frameRate(30);
+   resetGame();
 }
 
 void resetGame(){
@@ -94,7 +92,6 @@ void updateCameraPosition(){
    int rightEdge = World.GRID_UNITS_WIDE * World.GRID_UNIT_SIZE - width;
    int topEdge = World.GRID_UNITS_TALL * World.GRID_UNIT_SIZE - height; 
    
- 
    cameraOffsetX = player.position.x - width / 2; 
    if (cameraOffsetX < 0){
      cameraOffsetX = 0;
@@ -112,58 +109,62 @@ void updateCameraPosition(){
    if (cameraOffsetY > topEdge){
       cameraOffsetY = topEdge;  
    }
- 
-   
 }
 
 void draw(){
- // background();
- 
+ //**************************
+ //stage 1 = beginning screen
+ //**************************
  if(stage == 1){
   background(bg); 
   textAlign(CENTER);
   textSize(32);
   text ("TO THE SHIP!!",375,50);
-  
-   if(animDelay --<0){
-        animDelay = 12;
-        if(animFrame == 0){
-          animFrame = 1;
-        }else {
-          animFrame = 0;
-        }
-      }
-      println(animFrame);
+  if(animDelay --<0){
+      animDelay = 12;
       if(animFrame == 0){
-        text ("    ",375,450); 
-      } else {
-        text ("Press any key to start the game",375,450); 
+        animFrame = 1;
+      }else {
+        animFrame = 0;
       }
-  
-    if(keyPressed == true){
-       stage = 2;
+   }
+   println(animFrame);
+  if(animFrame == 0){
+    text ("    ",375,450); 
+  } else {
+    text ("Press any key to start the game",375,450); 
+  }
+  if(keyPressed == true){
+     stage = 2;
   } 
  }
+ //**************************
+ //stage 2 = first level
+ //**************************
  else if(stage == 2){
    pushMatrix();
    translate(-cameraOffsetX, -cameraOffsetY);
    //translate(cameraOffsetY,0.0); 
    updateCameraPosition();
+   
+   //WORLD
    world2 = new World(bg, moon);
    world1.render();
  
-   
+   //PLAYER 
    player.inputCheck(); 
    player.move();
    player.draw();
    
+
+   
+   //OPPONENT
    opponent.move(player.position);
    opponent.draw();
    
-   if(opponent.kill(player.position)){ //WIP
+   if(opponent.kill(player.position) || player.lavaDeath()){ //WIP
      player.hurt();
      //disable keys
-    // theKeyboard.disableAllButR();
      deadScreen();
      stage = 3;
    }
@@ -173,54 +174,48 @@ void draw(){
    
    popMatrix();
    
+ //**************************
+ //ENERGY BALL DISPLAY COUNTER
+ //**************************
    textAlign(TOP);
    image(energy1, 50, 433, 40 , 40 );
    outlinedText(" "+player.energyCollected, 85, 473);
-   
-   }//end of stage 2
+ }//end of stage 2
  
-   else if(stage == 3){
-    //int animDelay;
-    //int animFrame; 
-    
-     
-     
-    background(#030000);
-    textAlign(CENTER);
-    textSize(32);
-    
-    text ("TO THE SHIP!!",375,50);
-    
-     if(animDelay --<0){
-        animDelay = 12;
-        if(animFrame == 0){
-          animFrame = 1;
-        }else {
-          animFrame = 0;
-        }
-      }
-      
-      if(animFrame == 0){
-      text ("Press ENTER to restart the game",375,450); 
-      } else {
-      text (" ",375,450); 
-      }
-    
-    
-  
-    
-    if(keyCode == ENTER){
-      resetGame();
-      tint(255);
-      stage = 2;
-    } 
-  }//end of stage 3
+ //**************************
+ // stage 3 = dead screen
+ //**************************
+  else if(stage == 3){
+  //int animDelay;
+  //int animFrame; 
+  background(#030000);
+  textAlign(CENTER);
+  textSize(32);
+  text ("TO THE SHIP!!",375,50);
+  if(animDelay-- < 0){
+    animDelay = 12;
+    if(animFrame == 0){
+      animFrame = 1;
+    }else {
+      animFrame = 0;
+    }
+  }
+  if(animFrame == 0){
+    text ("Press ENTER to restart the game",375,450); 
+  } else {
+    text (" ",375,450); 
+  }
+  if(keyCode == ENTER){
+    resetGame();
+    tint(255);
+    stage = 2;
+  } 
+ }//end of stage 3
   
   else{
   
   }
 }
-
 
 void deadScreen(){
   loadPixels();

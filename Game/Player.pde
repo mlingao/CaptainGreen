@@ -8,10 +8,10 @@ class Player{
   int animFrame; 
   int energyCollected; 
   
-  static final float JUMP_POWER = 9.5; //How high a player jumps
+  static final float JUMP_POWER = 9.7; //How high a player jumps
   static final float RUN_SPEED = 5;     //Speed of Running
   static final float AIR_RUN_SPEED = 1.5; // Running speed while in air. 
-  static final float SLOWDOWN_PERC = 0.6; //Friction from ground; 
+  static final float SLOWDOWN_PERC = 0.6;//0.6 //Friction from ground; 
   static final float AIR_SLOWDOWN_PERC = 0.85; // resistance in air 0.85
   static final int RUN_ANIMATION_DELAY = 3; //Cycles pass during animation update
   static final float TRIVIAL_SPEED = 1; //If speed is under this than player is still. 
@@ -50,6 +50,7 @@ class Player{
        //INPUT MUSIC for JUMPING
         velocity.y = -JUMP_POWER;
         isOnGround = false; 
+        println(isOnGround); 
      } 
     }
     
@@ -69,21 +70,41 @@ class Player{
   }
   
   void checkForFalling(){
-     if( world1.worldSquareAt(position) == World.TILE_EMPTY){
+    
+     if( world1.worldSquareAt(position) == World.TILE_EMPTY || world1.worldSquareAt(position) == World.TILE_LAVA){
        isOnGround = false; 
-     }
+     } 
+     if(world1.worldSquareAt(position) == World.TILE_PLATFORM){
+      
+       if(velocity.y > 0 ){
+         println("TEST"); 
+         isOnGround = true; 
+         position.y = world1.topSquare(position); 
+         //position.y = world1.topOfSquare(position);
+         velocity.y = 0.1; 
+        
+       }else{
+        isOnGround = false; 
+        //velocity.y += GRAVITY_POWER;  
+          
+       }
+     }  
+     
      
      if (isOnGround == false){
-       if(world1.worldSquareAt(position) == World.TILE_SOLID ||
-          world1.worldSquareAt(position) == World.TILE_PLATFORM
-         ){
+       
+       if(world1.worldSquareAt(position) == World.TILE_SOLID ){
          isOnGround = true;
+         //this is why the player teleports to the top of the square
          position.y = world1.topOfSquare(position);
+    
+         println("position.y in checkForFalling() " + position.y);
          velocity.y = 0;
        }else{
          velocity.y += GRAVITY_POWER;
        }
      }
+
   }
   
   
@@ -108,37 +129,30 @@ class Player{
      topSide.x = position.x; 
      topSide.y = position.y - ceilingProbeDistance;
      
-    if( world1.worldSquareAt(topSide) == World.TILE_SOLID
-        //world1.worldSquareAt(topSide) == World.TILE_PLATFORM
-       ){
-          
-      if(world1.worldSquareAt(position)==World.TILE_SOLID 
-        // world1.worldSquareAt(position) == World.TILE_PLATFORM
-         ) {
+    if( world1.worldSquareAt(topSide) == World.TILE_SOLID){
+      if(world1.worldSquareAt(position)==World.TILE_SOLID ||
+         world1.worldSquareAt(position) == World.TILE_PLATFORM) {
          
         position.sub(velocity);
         velocity.x=0.0;
         velocity.y=0.0;
-      } else 
-        {
+      } else {
           position.y = world1.bottomOfSquare(topSide)+ceilingProbeDistance;
           println(world1.bottomOfSquare(topSide)+ceilingProbeDistance);
           if(velocity.y < 0) 
             velocity.y = 0.0;
-          
         }
-    
-    
+
+    }
+       
     if( world1.worldSquareAt(leftSideLow)==World.TILE_SOLID || 
         world1.worldSquareAt(leftSideLow) == World.TILE_ROCK ) {
      
       position.x = world1.rightOfSquare(leftSideLow)+wallProbeDistance;
       if(velocity.x < 0) 
-        velocity.x = 0.0;
-         
+        velocity.x = 0.0;    
     }
- 
-    }
+    
    
     if( world1.worldSquareAt(leftSideHigh)==World.TILE_SOLID || 
         world1.worldSquareAt(leftSideHigh) == World.TILE_ROCK ) {
@@ -148,11 +162,14 @@ class Player{
       if(velocity.x < 0) 
         velocity.x = 0.0;
     }
+    
+    
+   
+    
+    
+    
+    
   
-    
-   
-    
-   
     if( world1.worldSquareAt(rightSideLow)==World.TILE_SOLID || 
         world1.worldSquareAt(rightSideLow) == World.TILE_ROCK ) {
       position.x = world1.leftOfSquare(rightSideLow)-wallProbeDistance;
@@ -161,12 +178,6 @@ class Player{
       }
     }
     
- 
-    
-   
-    
-    
-   
     if( world1.worldSquareAt(rightSideHigh)==World.TILE_SOLID || 
         world1.worldSquareAt(rightSideHigh) == World.TILE_ROCK ) {
       position.x = world1.leftOfSquare(rightSideHigh)-wallProbeDistance;
@@ -174,12 +185,15 @@ class Player{
         velocity.x = 0.0;
       }
     }
-    
-   
-    
-   
-    
   }
+   
+  boolean lavaDeath(){
+    if (position.y >= 750){
+      isHurt = true; //shows player hurt animation
+      return true;
+    }
+    return false;
+  }  
   //set the status of the player to hurt
   void hurt(){
     isHurt = true;
