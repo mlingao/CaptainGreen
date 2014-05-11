@@ -9,8 +9,8 @@ class Opponent {
   int animDelay;
   int animFrame;
 
-  static final float JUMP_POWER = 11.5; //How high a player jumps  
-  static final float RUN_SPEED = 5;     //Speed of Running
+  static final float JUMP_POWER = 9.0; //How high a player jumps  
+  static final float RUN_SPEED = 3;     //Speed of Running
   static final float AIR_RUN_SPEED = 3; // Running speed while in air. 
   static final float SLOWDOWN_PERC = 0.6; //Friction from ground; 
   static final float AIR_SLOWDOWN_PERC = 0.85; // resistance in air 0.85
@@ -120,12 +120,19 @@ class Opponent {
     }
   }
 
+
+
+
   void chase(PVector playerPosition){
 
+    
     if (playerPosition.x > position.x){
        velocity.x = RUN_SPEED;
        position.x++;
+        
     }
+    
+    //SLOWS DOWN A BIT WHEN IT GETS CLOSE TO THE PLAYER
     if (distanceBetweenX(playerPosition, position)<30 && distanceBetweenX(playerPosition, position)>-30){
         for(int i=0; i < 200; i++){
           velocity.x = 0.0;
@@ -133,21 +140,14 @@ class Opponent {
     }
     else if (playerPosition.x < position.x){
            velocity.x = -RUN_SPEED;
-           position.x--;
-          }
+           position.x--; 
+          }    
           
-  //************************************************************
-  //I DON'T KNOW WHY THIS DOESN'T WORK!
-  //************************************************************
-    if ( world1.worldSquareAt(sense)==World.TILE_PLATFORM) {
-        println("TESTING");
-        velocity.y = -JUMP_POWER; 
-        opponentOnGround = false; 
-        position.y = world1.topSquare(position); 
-    }
-          
-  //*************************************************************
+    
   }
+  
+ 
+  
   boolean kill(PVector v1){ //only determined by the x coordinate
     if ((distanceBetweenX(v1, position)<60 && distanceBetweenX(v1, position)>-60) && (distanceBetweenY(v1, position)<80 && distanceBetweenY(v1, position)>-80)){
       return true;
@@ -162,17 +162,7 @@ class Opponent {
     return v1.y - v2.y;
   }
  
- 
- //**************************************************************
- //sense function. 
-  PVector sense(PVector position){
-    //PVector sense; 
-    
-    sense.x = position.x + 50;
-    sense.y = position.y + 50; 
-    
-    return sense;  
-  }
+
 
   void move(PVector playerPosition) {
     position.add(velocity);

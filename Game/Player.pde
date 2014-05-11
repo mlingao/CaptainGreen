@@ -50,7 +50,6 @@ class Player{
        //INPUT MUSIC for JUMPING
         velocity.y = -JUMP_POWER;
         isOnGround = false; 
-        println(isOnGround); 
      } 
     }
     
@@ -77,7 +76,6 @@ class Player{
      if(world1.worldSquareAt(position) == World.TILE_PLATFORM){
       
        if(velocity.y > 0 ){
-         println("TEST"); 
          isOnGround = true; 
          position.y = world1.topSquare(position); 
          //position.y = world1.topOfSquare(position);

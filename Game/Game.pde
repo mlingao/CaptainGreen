@@ -65,6 +65,8 @@ void setup(){
    CaptainPink_walk1 = loadImage("CapPink_walk1.png");
    CaptainPink_walk2 = loadImage("CapPink_walk2.png");
    
+   world1.loadPlatform(); 
+   
    noStroke();
    noSmooth();
    frameRate(30);
@@ -128,7 +130,7 @@ void draw(){
         animFrame = 0;
       }
    }
-   println(animFrame);
+
   if(animFrame == 0){
     text ("    ",375,450); 
   } else {
@@ -144,7 +146,6 @@ void draw(){
  else if(stage == 2){
    pushMatrix();
    translate(-cameraOffsetX, -cameraOffsetY);
-   //translate(cameraOffsetY,0.0); 
    updateCameraPosition();
    
    //WORLD
@@ -159,14 +160,33 @@ void draw(){
 
    
    //OPPONENT
-   opponent.move(player.position);
-   opponent.draw();
    
-   if(opponent.kill(player.position) || player.lavaDeath()){ //WIP
+   if(world1.worldSquareAt(opponent.position) != world1.TILE_LAVA){
+     opponent.move(player.position);
+     opponent.draw();
+   
+   
+   if(opponent.kill(player.position)){ //WIP
      player.hurt();
      //disable keys
-     deadScreen();
+    // deadScreen();
      stage = 3;
+   }else { if(player.lavaDeath()){
+             player.hurt(); 
+             //deadScreen(); 
+             stage = 3; 
+            }
+         }
+     
+   }
+   
+   if(player.lavaDeath()){
+      player.hurt();
+      stage = 3;  
+   }
+   
+   if(world1.worldSquareAt(player.position) == world1.TILE_SPACESHIP){
+      stage = 4;  
    }
    
    println("Player Position:" + player.position.x +" , " + player.position.y);
@@ -212,8 +232,36 @@ void draw(){
   } 
  }//end of stage 3
   
-  else{
-  
+  else if(stage == 4){
+    background(#030000);
+    textAlign(CENTER);
+    textSize(32);
+    text("TO THE SHIP!!", 375, 50);
+    text("YOU WIN!!" , 375, 150); 
+    
+    if(animDelay-- < 0){
+      animDelay = 12;
+    if(animFrame == 0){
+      animFrame = 1;
+    }else {
+      animFrame = 0;
+      }
+    }
+    if(animFrame == 0){
+      text ("Press ENTER to play the game again",375,450); 
+    } else {
+      text (" ",375,450); 
+    }
+    
+    if(keyCode == ENTER){
+      resetGame();
+      tint(255);
+      stage = 2;
+    } 
+    
+    
+    
+    
   }
 }
 

@@ -31,15 +31,18 @@ class World{
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 7, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0},
+                         {0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 7, 0, 0, 0, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                          {0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                         {0, 5, 0, 3, 2, 7, 7, 7, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                         {0, 5, 0, 3, 2, 7, 7, 7, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0},
                          {1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1} };
    
+ PVector platform = new PVector(); 
+ ArrayList<PVector> platformArray = new ArrayList(); 
+ 
  World(){}
  public World(PImage bg, PImage moon){
   background(bg);
-  image(moon,-150,-100);
+  image(moon,-150, 100);
   
  } 
  
@@ -81,7 +84,6 @@ class World{
  
  float topSquare(PVector thisPosition) {
     int thisY = int(thisPosition.y);
-    //println(thisY); 
     
     
     thisY /= GRID_UNIT_SIZE;
@@ -111,6 +113,21 @@ class World{
     return leftOfSquare(thisPosition)+GRID_UNIT_SIZE;
     
   }
+  
+ 
+ void loadPlatform(){
+    for(int i = 0; i < GRID_UNITS_WIDE; i++){
+     for(int ii = 0; ii < GRID_UNITS_TALL; ii++){
+       platform.x = i* GRID_UNIT_SIZE + (GRID_UNIT_SIZE / 2); 
+       platform.y = ii * GRID_UNIT_SIZE + (GRID_UNIT_SIZE / 2); 
+      
+       platformArray.add(platform); 
+     } 
+    }
+  
+  
+ } 
+  
   
  void reload(){
     totalEnergy = 0; 
@@ -158,7 +175,7 @@ class World{
          image(grass, i*GRID_UNIT_SIZE, j*GRID_UNIT_SIZE, 100,100);
          break;
       case TILE_SPACESHIP:
-        image(spaceship,i * grass.width, 300 , 300,300);
+        image(spaceship,i * GRID_UNIT_SIZE, j * GRID_UNIT_SIZE - 125, 150 ,150);
         break;   
       case TILE_ENERGY:
           if(animDelay--<0){
