@@ -1,4 +1,4 @@
-PImage startScreen; 
+PImage startScreen, controls1, controls2; 
 PFont title;
 int stage; 
 
@@ -30,6 +30,8 @@ void setup(){
    startScreen = loadImage("bg.jpg");
    image(startScreen,0,0,width,height);
    title = loadFont("ArialMT-48.vlw");
+   controls1 = loadImage("controls1.png");
+   controls2 = loadImage("controls2.png");
    
    //*********************
    //ELEMENTS OF THE WORLD
@@ -132,8 +134,10 @@ void draw(){
    }
 
   if(animFrame == 0){
+    image(controls1, 120, 150);
     text ("    ",375,450); 
   } else {
+    image(controls2, 120, 150);
     text ("Press any key to start the game",375,450); 
   }
   if(keyPressed == true){
@@ -159,27 +163,25 @@ void draw(){
    
 
    
-   //OPPONENT
-   
+   //OPPONENT********************************************************
+  
    if(world1.worldSquareAt(opponent.position) != world1.TILE_LAVA){
      opponent.move(player.position);
      opponent.draw();
+     
    
-   
-   if(opponent.kill(player.position)){ //WIP
-     player.hurt();
-     //disable keys
-    // deadScreen();
-     stage = 3;
-   }else { if(player.lavaDeath()){
-             player.hurt(); 
-             //deadScreen(); 
-             stage = 3; 
-            }
-         }
+       if(opponent.kill(player.position)){ //WIP
+         player.hurt();
+         stage = 3;
+       }else { if(player.lavaDeath()){
+                   player.hurt(); 
+                   stage = 3; 
+                }  
+             }
      
    }
-   
+  
+   //******************************************************************
    if(player.lavaDeath()){
       player.hurt();
       stage = 3;  
@@ -213,7 +215,7 @@ void draw(){
   textSize(32);
   text ("TO THE SHIP!!",375,50);
   if(animDelay-- < 0){
-    animDelay = 12;
+    animDelay = 20;
     if(animFrame == 0){
       animFrame = 1;
     }else {
@@ -221,9 +223,13 @@ void draw(){
     }
   }
   if(animFrame == 0){
+    textSize(28);
     text ("Press ENTER to restart the game",375,450); 
+    textSize(90);
+    text("GAME OVER!",375, 250);
   } else {
     text (" ",375,450); 
+    text(" ",375, 250);
   }
   if(keyCode == ENTER){
     resetGame();
@@ -238,7 +244,9 @@ void draw(){
     textSize(32);
     text("TO THE SHIP!!", 375, 50);
     text("YOU WIN!!" , 375, 150); 
-    
+   
+    outlinedText(" "+player.energyCollected, 180, 260);
+
     if(animDelay-- < 0){
       animDelay = 12;
     if(animFrame == 0){
@@ -248,8 +256,11 @@ void draw(){
       }
     }
     if(animFrame == 0){
+      image(energy1, 75, 200, 80, 80);
+      textSize(32);
       text ("Press ENTER to play the game again",375,450); 
     } else {
+      image(energy2, 75, 200, 80, 80);
       text (" ",375,450); 
     }
     

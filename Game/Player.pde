@@ -10,7 +10,7 @@ class Player{
   
   static final float JUMP_POWER = 9.7; //How high a player jumps
   static final float RUN_SPEED = 5;     //Speed of Running
-  static final float AIR_RUN_SPEED = 1.5; // Running speed while in air. 
+  static final float AIR_RUN_SPEED = 1.5; // 1.5 Running speed while in air. 
   static final float SLOWDOWN_PERC = 0.6;//0.6 //Friction from ground; 
   static final float AIR_SLOWDOWN_PERC = 0.85; // resistance in air 0.85
   static final int RUN_ANIMATION_DELAY = 3; //Cycles pass during animation update

@@ -1,6 +1,7 @@
 class Opponent {
   PVector position, velocity;
-  PVector sense; 
+  PVector sense = new PVector();
+  PVector negSense = new PVector(); 
 
 
   Boolean opponentOnGround;
@@ -10,10 +11,10 @@ class Opponent {
   int animFrame;
 
   static final float JUMP_POWER = 9.0; //How high a player jumps  
-  static final float RUN_SPEED = 3;     //Speed of Running
+  static final float RUN_SPEED = 6.75;     //Speed of Running
   static final float AIR_RUN_SPEED = 3; // Running speed while in air. 
   static final float SLOWDOWN_PERC = 0.6; //Friction from ground; 
-  static final float AIR_SLOWDOWN_PERC = 0.85; // resistance in air 0.85
+  static final float AIR_SLOWDOWN_PERC = .85; // resistance in air 0.85
   static final int RUN_ANIMATION_DELAY = 3; //Cycles pass during animation update
   static final float TRIVIAL_SPEED = 1; //If speed is under this than player is still.  
 
@@ -37,11 +38,7 @@ class Opponent {
   void checkForFalling() {
     if ( world1.worldSquareAt(position) == World.TILE_EMPTY || world1.worldSquareAt(position) == World.TILE_LAVA) {
       opponentOnGround = false;
-      if (position.y >= 750){ //opponent fell on the lava
-        //opponent is hurt
-        //eliminate opponent
-        //opponentDead();
-      }
+    
     }
 
     if (opponentOnGround == false) {
@@ -124,8 +121,7 @@ class Opponent {
 
 
   void chase(PVector playerPosition){
-
-    
+ 
     if (playerPosition.x > position.x){
        velocity.x = RUN_SPEED;
        position.x++;
@@ -142,11 +138,58 @@ class Opponent {
            velocity.x = -RUN_SPEED;
            position.x--; 
           }    
-          
     
   }
   
+  
+ void lavaJump(){
+  if(world1.worldSquareAt(sense()) == world1.TILE_PLATFORM){
+      velocity.y = -JUMP_POWER;
+      //  velocity.x += .4;
+        opponentOnGround = false;
+        position.y = world1.topOfSquare(position);
+    
+  } 
+   
+   
+  if(world1.worldSquareAt(sense()) == world1.TILE_LAVA){
+        println("GAME DRAW WORKING?");
+        velocity.y = -JUMP_POWER;
+        velocity.x += .4;
+        opponentOnGround = false;
+        position.y = world1.topOfSquare(position);
+     }
+     
+  if(world1.worldSquareAt(negativeSense()) == world1.TILE_LAVA){
+       println("GAME DRAW WORKING?");
+       velocity.y = -JUMP_POWER;
+       velocity.x += .4;
+       opponentOnGround = false;
+       position.y = world1.topOfSquare(position);
+     }
+     
  
+  
+ } 
+ 
+ PVector negativeSense(){
+  PVector temp = position;
+  
+  negSense.x = temp.x - 10;
+  negSense.y = temp.y -10;
+  
+  return negSense; 
+  
+ } 
+ 
+ PVector sense(){
+   PVector temp = position;
+   
+   sense.x = temp.x + 10;
+   sense.y = temp.y + 10;
+   
+   return sense;
+ }
   
   boolean kill(PVector v1){ //only determined by the x coordinate
     if ((distanceBetweenX(v1, position)<60 && distanceBetweenX(v1, position)>-60) && (distanceBetweenY(v1, position)<80 && distanceBetweenY(v1, position)>-80)){
@@ -167,10 +210,10 @@ class Opponent {
   void move(PVector playerPosition) {
     position.add(velocity);
     checkForWallBumping();  
-    //checkForFalling();
-    
-    chase(playerPosition);
     checkForFalling();
+    lavaJump(); 
+    chase(playerPosition);
+    //checkForFalling();
   }
 
   void draw() {
