@@ -147,7 +147,7 @@ class Opponent {
       velocity.y = -JUMP_POWER;
       //  velocity.x += .4;
         opponentOnGround = false;
-        position.y = world1.topOfSquare(position);
+       // position.y = world1.topOfSquare(position);
     
   } 
    
@@ -157,7 +157,7 @@ class Opponent {
         velocity.y = -JUMP_POWER;
         velocity.x += .4;
         opponentOnGround = false;
-        position.y = world1.topOfSquare(position);
+        //position.y = world1.topOfSquare(position);
      }
      
   if(world1.worldSquareAt(negativeSense()) == world1.TILE_LAVA){
@@ -165,7 +165,7 @@ class Opponent {
        velocity.y = -JUMP_POWER;
        velocity.x += .4;
        opponentOnGround = false;
-       position.y = world1.topOfSquare(position);
+      // position.y = world1.topOfSquare(position);
      }
      
  

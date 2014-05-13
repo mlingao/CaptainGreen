@@ -1,3 +1,17 @@
+import ddf.minim.spi.*;
+import ddf.minim.signals.*;
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
+
+Minim minim; 
+
+AudioPlayer music; 
+AudioSample soundJump, soundDeath, soundEnergy; 
+
+int gameStartTime, gameCurrentTime; 
+
 PImage startScreen, controls1, controls2; 
 PFont title;
 int stage; 
@@ -13,6 +27,11 @@ int height = 500;
 int width = 750; 
 
 float cameraOffsetX, cameraOffsetY;
+
+
+  int minutes; 
+   int seconds;
+
 
 int animDelay;
 int animFrame; 
@@ -32,7 +51,17 @@ void setup(){
    title = loadFont("ArialMT-48.vlw");
    controls1 = loadImage("controls1.png");
    controls2 = loadImage("controls2.png");
+  
+  /*
+   minim = new Minim(this);
+   music = minim.loadFile(" ",1024);
+   music.loop();
+   int buffersize = 256;
    
+   soundJump = minim.loadSample(" ",buffersize); 
+   soundEnergy = minim.loadSample(" ", buffersize);
+   soundDeath = minim.loadSample(" ",buffersize); 
+  */
    //*********************
    //ELEMENTS OF THE WORLD
    //*********************
@@ -66,8 +95,7 @@ void setup(){
    
    CaptainPink_walk1 = loadImage("CapPink_walk1.png");
    CaptainPink_walk2 = loadImage("CapPink_walk2.png");
-   
-   world1.loadPlatform(); 
+  
    
    noStroke();
    noSmooth();
@@ -79,10 +107,12 @@ void resetGame(){
    player.reset();
    opponent.reset();
    world1.reload();
+   gameCurrentTime = gameStartTime = millis()/1000; 
 }
 
 void outlinedText(String sayThis, float atX, float atY) {
   textFont(title); // use the font we loaded
+  textSize(30); 
   fill(0); // white for the upcoming text, drawn in each direction to make outline
   text(sayThis, atX-1,atY);
   text(sayThis, atX+1,atY);
@@ -148,9 +178,14 @@ void draw(){
  //stage 2 = first level
  //**************************
  else if(stage == 2){
+ 
    pushMatrix();
    translate(-cameraOffsetX, -cameraOffsetY);
    updateCameraPosition();
+   
+   
+   textAlign(RIGHT);
+  
    
    //WORLD
    world2 = new World(bg, moon);
@@ -164,11 +199,14 @@ void draw(){
 
    
    //OPPONENT********************************************************
-  
+ 
+    
    if(world1.worldSquareAt(opponent.position) != world1.TILE_LAVA){
-     opponent.move(player.position);
-     opponent.draw();
-     
+    
+       opponent.move(player.position);
+       opponent.draw();
+
+    
    
        if(opponent.kill(player.position)){ //WIP
          player.hurt();
@@ -189,6 +227,9 @@ void draw(){
    
    if(world1.worldSquareAt(player.position) == world1.TILE_SPACESHIP){
       stage = 4;  
+      if(stage == 4){
+          gameCurrentTime = millis() / 1000; 
+      }
    }
    
    println("Player Position:" + player.position.x +" , " + player.position.y);
@@ -201,7 +242,24 @@ void draw(){
  //**************************
    textAlign(TOP);
    image(energy1, 50, 433, 40 , 40 );
-   outlinedText(" "+player.energyCollected, 85, 473);
+    
+   outlinedText(" "+player.energyCollected, 85, 470);
+   
+   gameCurrentTime = millis()/ 1000;  
+  
+   minutes = (gameCurrentTime - gameStartTime) / 60;
+   seconds = (gameCurrentTime - gameStartTime) % 60;
+   
+
+   if (seconds < 10) {
+      outlinedText(minutes + ":0" + seconds, 650, 480); 
+   } else {
+       
+      outlinedText(minutes + ":"  + seconds, 650, 480); 
+   }
+     
+   
+   
  }//end of stage 2
  
  //**************************
@@ -288,4 +346,14 @@ void keyPressed(){
 
 void keyReleased(){
  theKeyboard.releaseKey(key,keyCode); 
+}
+
+void stop(){
+ music.close();
+ soundJump.close();
+ soundEnergy.close();
+ soundDeath.close();  
+ 
+ super.stop();  
+  
 }
