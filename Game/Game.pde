@@ -44,7 +44,7 @@ Opponent opponent = new Opponent();
 Keyboard theKeyboard = new Keyboard(); 
 
 void setup(){ 
-   size(width, height );
+   size(750, 500);
    stage = 1;
    startScreen = loadImage("bg.jpg");
    image(startScreen,0,0,width,height);
